@@ -1,0 +1,153 @@
+from langchain.chains import RetrievalQA
+from langchain_chroma import Chroma
+from langchain_openai import OpenAI, OpenAIEmbeddings
+from langchain_text_splitters import CharacterTextSplitter
+
+llm = OpenAI(temperature=0)
+
+from pathlib import Path
+
+relevant_parts = []
+for p in Path(".").absolute().parts:
+    relevant_parts.append(p)
+    if relevant_parts[-3:] == ["langchain", "docs", "modules"]:
+        break
+doc_path = str(Path(*relevant_parts) / "state_of_the_union.txt")
+
+from langchain_community.document_loaders import TextLoader
+
+loader = TextLoader(doc_path)
+documents = loader.load()
+text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+texts = text_splitter.split_documents(documents)
+
+embeddings = OpenAIEmbeddings()
+docsearch = Chroma.from_documents(texts, embeddings, collection_name="state-of-union")
+
+state_of_union = RetrievalQA.from_chain_type(
+    llm=llm, chain_type="stuff", retriever=docsearch.as_retriever()
+)
+
+from langchain_community.document_loaders import WebBaseLoader
+
+loader = WebBaseLoader("https://beta.ruff.rs/docs/faq/")
+
+docs = loader.load()
+ruff_texts = text_splitter.split_documents(docs)
+ruff_db = Chroma.from_documents(ruff_texts, embeddings, collection_name="ruff")
+ruff = RetrievalQA.from_chain_type(
+    llm=llm, chain_type="stuff", retriever=ruff_db.as_retriever()
+)
+
+# Import things that are needed generically
+from langchain.agents import Tool
+
+tools = [
+    Tool(
+        name="state_of_union_qa_system",
+        func=state_of_union.run,
+        description="useful for when you need to answer questions about the most recent state of the union address. Input should be a fully formed question.",
+    ),
+    Tool(
+        name="ruff_qa_system",
+        func=ruff.run,
+        description="useful for when you need to answer questions about ruff (a python linter). Input should be a fully formed question.",
+    ),
+]
+
+from langgraph.prebuilt import create_react_agent
+
+agent = create_react_agent("openai:gpt-4.1-mini", tools)
+
+input_message = {
+    "role": "user",
+    "content": "What did biden say about ketanji brown jackson in the state of the union address?",
+}
+
+for step in agent.stream(
+    {"messages": [input_message]},
+    stream_mode="values",
+):
+    step["messages"][-1].pretty_print()
+
+input_message = {
+    "role": "user",
+    "content": "Why use ruff over flake8?",
+}
+
+for step in agent.stream(
+    {"messages": [input_message]},
+    stream_mode="values",
+):
+    step["messages"][-1].pretty_print()
+
+tools = [
+    Tool(
+        name="state_of_union_qa_system",
+        func=state_of_union.run,
+        description="useful for when you need to answer questions about the most recent state of the union address. Input should be a fully formed question.",
+        return_direct=True,
+    ),
+    Tool(
+        name="ruff_qa_system",
+        func=ruff.run,
+        description="useful for when you need to answer questions about ruff (a python linter). Input should be a fully formed question.",
+        return_direct=True,
+    ),
+]
+
+from langgraph.prebuilt import create_react_agent
+
+agent = create_react_agent("openai:gpt-4.1-mini", tools)
+
+input_message = {
+    "role": "user",
+    "content": "What did biden say about ketanji brown jackson in the state of the union address?",
+}
+
+for step in agent.stream(
+    {"messages": [input_message]},
+    stream_mode="values",
+):
+    step["messages"][-1].pretty_print()
+
+input_message = {
+    "role": "user",
+    "content": "Why use ruff over flake8?",
+}
+
+for step in agent.stream(
+    {"messages": [input_message]},
+    stream_mode="values",
+):
+    step["messages"][-1].pretty_print()
+
+tools = [
+    Tool(
+        name="state_of_union_qa_system",
+        func=state_of_union.run,
+        description="useful for when you need to answer questions about the most recent state of the union address. Input should be a fully formed question, not referencing any obscure pronouns from the conversation before.",
+    ),
+    Tool(
+        name="ruff_qa_system",
+        func=ruff.run,
+        description="useful for when you need to answer questions about ruff (a python linter). Input should be a fully formed question, not referencing any obscure pronouns from the conversation before.",
+    ),
+]
+
+from langgraph.prebuilt import create_react_agent
+
+agent = create_react_agent("openai:gpt-4.1-mini", tools)
+
+input_message = {
+    "role": "user",
+    "content": "What tool does ruff use to run over Jupyter Notebooks? Did the president mention that tool in the state of the union?",
+}
+
+for step in agent.stream(
+    {"messages": [input_message]},
+    stream_mode="values",
+):
+    step["messages"][-1].pretty_print()
+
+
