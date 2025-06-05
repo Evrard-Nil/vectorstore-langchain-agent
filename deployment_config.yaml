@@ -1,0 +1,16 @@
+http:
+  port: 8000
+  health_check_path: /
+stdin: false
+name: vectorstore-langchain-agent
+summary: An AI agent built with LangChain that leverages a vector store (likely ChromaDB) and OpenAI models to perform tasks, potentially involving retrieval-augmented generation.
+environment_variables:
+  - name: OPENAI_API_KEY
+    value: <your_openai_api_key>
+    description: The OpenAI API key for authenticating with OpenAI's API services.
+  - name: DEFAULT_MODEL_NAME
+    value: gpt-4o
+    description: The default OpenAI model name to use for the LLM.
+  - name: OPENAI_BASE_URL
+    value: https://api.openai.com/v1
+    description: The base URL for the OpenAI API. Change this if using a different endpoint or a local LLM.
