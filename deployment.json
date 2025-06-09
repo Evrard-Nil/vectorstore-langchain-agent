@@ -1,0 +1,53 @@
+{
+  "agent_name": "tmp7m9gzgmt",
+  "agent_path": "/tmp/tmp7m9gzgmt",
+  "output_directory": "/tmp/tmp7m9gzgmt",
+  "analysis": {
+    "main_function": "unknown",
+    "main_class": "unknown",
+    "required_imports": [],
+    "required_parameters": {},
+    "prompt_requirements": {
+      "required_variables": [],
+      "variable_descriptions": {},
+      "special_placeholders": [],
+      "prompt_pattern": ""
+    },
+    "usage_example": "",
+    "input_format": "text",
+    "output_format": "text",
+    "special_requirements": [],
+    "raw_analysis": "I cannot perform the analysis because the agent code was not provided.\n\nPlease provide the LangChain agent code you wish to have analyzed. Once the code is provided, I will be able to extract the information required for the `app.py` generation, following the specified JSON output format."
+  },
+  "generation_success": true,
+  "app_py_generated": true,
+  "config_used": {
+    "llm_model": "claude-opus-4-20250514",
+    "temperature": 0.7,
+    "max_tokens": 2000,
+    "default_tools": [
+      "search",
+      "calculator"
+    ],
+    "default_input": "Hello, how can you help me?",
+    "agent_config": {
+      "verbose": true,
+      "max_iterations": 10,
+      "early_stopping_method": "generate"
+    },
+    "output_format": "json",
+    "include_metadata": true,
+    "config_loading": {
+      "load_input_json": true,
+      "allow_config_override": true
+    },
+    "error_handling": {
+      "log_level": "INFO",
+      "save_errors_to_output": true
+    },
+    "tool_config": {
+      "handle_import_errors": true,
+      "warn_on_missing_tools": true
+    }
+  }
+}
